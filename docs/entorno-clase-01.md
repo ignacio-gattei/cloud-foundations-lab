@@ -110,6 +110,73 @@ purchases y logouts. El script de procesamiento filtra solo los signups.
 
 ---
 
+## Conexión con Cloud Foundations
+
+Todo lo que levantamos localmente tiene un equivalente directo en producción.
+La diferencia es que acá lo corrés gratis, en tu cuenta de GitHub, sin riesgo de
+generar costos accidentales.
+
+| Local | AWS | Concepto |
+|-------|-----|----------|
+| Docker Compose | ECS / Fargate | correr containers administrados |
+| PostgreSQL en Docker | Amazon RDS | base de datos relacional como servicio (PaaS) |
+| MinIO | Amazon S3 | object storage |
+| Redis en Docker | Amazon ElastiCache | cache en memoria como servicio |
+| LocalStack | AWS real | APIs de integración (SQS, SNS, Lambda…) |
+| Redpanda | Amazon MSK / Kinesis | streaming de eventos |
+| `.env` | AWS Secrets Manager / Parameter Store | gestión de credenciales |
+| `scripts/check.sh` | CloudWatch / health checks | observabilidad básica |
+| GitHub Actions (`.github/workflows/`) | AWS CodePipeline | CI/CD |
+
+El modelo es el mismo: levantás un servicio, le apuntás con credenciales,
+escribís código que habla con su API. Lo que cambia entre local y cloud es
+quién gestiona el servidor — vos o el proveedor.
+
+Esto es la definición de **IaaS vs PaaS**: en local gestionás el container
+(IaaS). En AWS, RDS gestiona el servidor, los backups y el parche del SO por vos
+(PaaS). Vos solo administrás la base.
+
+---
+
+## Trabajo en equipo con Codespaces
+
+Cada integrante del grupo abre su propio Codespace desde el repo compartido.
+Cada uno tiene su entorno aislado — lo que rompés en el tuyo no afecta al resto.
+
+### Flujo por clase
+
+```bash
+# Al inicio de la clase — cada uno en su codespace
+git checkout main && git pull
+git checkout -b lab-01-tuapellido
+
+# Durante la clase — commitear cada cambio relevante
+git add docs/decisions.md
+git commit -m "lab-01: entorno levantado, decisión de Codespaces documentada"
+
+# Al terminar
+git push -u origin lab-01-tuapellido
+# Abrir PR en GitHub → asignar a un compañero para review
+```
+
+### Reglas del equipo
+
+- **Un branch por alumno por clase**: `lab-01-apellido`, `lab-02-apellido`, etc.
+- **Al menos un commit por clase**: si no hay commit, no hay evidencia de participación.
+- **Cada PR necesita review**: un compañero lee el diff y aprueba antes del merge.
+- **Las decisiones van en `docs/decisions.md`**: no en el chat, no en la cabeza.
+
+### Por qué esto importa
+
+En un equipo real nadie trabaja directo en `main`. Los PRs son el lugar donde
+se discute una decisión antes de que entre al código. El review de un compañero
+es exactamente lo que hace un tech lead antes de aprobar un deploy.
+
+Lo que practicamos acá no es solo Git — es el flujo de trabajo de cualquier
+equipo de ingeniería en producción.
+
+---
+
 ## El repo como evidencia
 
 Cada cambio que hacés va en un commit. Cada decisión va en `docs/decisions.md`.
